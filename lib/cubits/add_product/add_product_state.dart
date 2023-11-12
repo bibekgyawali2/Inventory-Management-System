@@ -17,3 +17,12 @@ class FetchProductSuccess extends AddProductState {
   @override
   List<Object?> get props => [productList];
 }
+
+class SearchProductSuccess extends AddProductState {
+  final List<ProductModal> filteredProductList;
+
+  SearchProductSuccess(this.filteredProductList);
+
+  @override
+  List<Object?> get props => [filteredProductList];
+}

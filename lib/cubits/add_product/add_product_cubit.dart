@@ -9,7 +9,7 @@ part 'add_product_state.dart';
 
 class AddProductCubit extends Cubit<AddProductState> {
   AddProductCubit() : super(AddProductInitial());
-
+  List<ProductModal> originalProductList = [];
   //place Product
   Future<void> addOrder({
     required String productName,
@@ -34,7 +34,7 @@ class AddProductCubit extends Cubit<AddProductState> {
           .where('user_id', isEqualTo: currentUser!.uid)
           .get();
       List<DocumentSnapshot> documents = snapshot.docs;
-      List<ProductModal> orderList = documents.map((DocumentSnapshot document) {
+      originalProductList = documents.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
         return ProductModal(
           product: data['Product'],
@@ -42,9 +42,25 @@ class AddProductCubit extends Cubit<AddProductState> {
           user_id: data['user_id'],
         );
       }).toList();
-      emit(FetchProductSuccess(orderList));
+      emit(FetchProductSuccess(originalProductList));
     } catch (e) {
       emit(AddProductError());
     }
+  }
+
+  void searchProducts(String query) {
+    if (originalProductList.isEmpty) {
+      // If the original list is empty, fetch the products first
+      getProduct();
+      return;
+    }
+
+    final List<ProductModal> filteredList = originalProductList
+        .where((product) =>
+            product.product.toLowerCase().contains(query.toLowerCase()) ||
+            product.price.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    emit(SearchProductSuccess(filteredList));
   }
 }
