@@ -22,7 +22,7 @@ class CustomButton extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.labelLarge,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }

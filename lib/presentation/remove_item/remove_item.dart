@@ -50,7 +50,7 @@ class _RemoveItemsState extends State<RemoveItems> {
                 ],
               ),
               const SizedBox(height: defaultPadding),
-              CustomButton(title: 'Submit', onPressed: () {})
+              CustomButton(title: 'Checkout', onPressed: () {})
             ],
           ),
         ),

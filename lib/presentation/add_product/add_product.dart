@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
+import '../../cubits/add_product/add_product_cubit.dart';
 import '../../widgets/label_text.dart';
 
 class AddProducts extends StatefulWidget {
@@ -11,7 +13,8 @@ class AddProducts extends StatefulWidget {
 }
 
 class _AddProductsState extends State<AddProducts> {
-  TextEditingController itemName = TextEditingController();
+  TextEditingController productName = TextEditingController();
+  TextEditingController price = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +27,38 @@ class _AddProductsState extends State<AddProducts> {
           child: Column(
             children: [
               LabelText(
-                controller: itemName,
+                controller: productName,
                 label: 'Enter Product Name',
                 hintText: 'eg: Tuborg',
                 keyboardType: TextInputType.name,
               ),
               const SizedBox(height: defaultPadding),
               LabelText(
-                controller: itemName,
+                controller: price,
                 label: 'Enter Product Price',
                 hintText: 'eg: 100',
                 keyboardType: TextInputType.number,
               ),
-              // const SizedBox(height: defaultPadding),
+              const SizedBox(height: defaultPadding),
+              CustomButton(
+                title: 'Submit',
+                onPressed: () {
+                  BlocProvider.of<AddProductCubit>(context).addOrder(
+                      price: price.text, productName: productName.text);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+            // const SizedBox(height: defaultPadding),
               // Row(
               //   children: [
               //     Expanded(
@@ -63,12 +85,3 @@ class _AddProductsState extends State<AddProducts> {
               //     )
               //   ],
               // ),
-              const SizedBox(height: defaultPadding),
-              CustomButton(title: 'Submit', onPressed: () {})
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

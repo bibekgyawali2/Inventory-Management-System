@@ -35,12 +35,12 @@ class HomePage extends StatelessWidget {
                   HomeCards(
                       title: 'Add Products Item',
                       onTap: () {
-                        Navigator.pushNamed(context, Routes.addProduct);
+                        Navigator.pushNamed(context, Routes.addItem);
                       }),
                   HomeCards(
                       title: 'View Products',
                       onTap: () {
-                        Navigator.pushNamed(context, Routes.addProduct);
+                        Navigator.pushNamed(context, Routes.viewProducts);
                       }),
                   HomeCards(
                       title: 'Checkout Items',
