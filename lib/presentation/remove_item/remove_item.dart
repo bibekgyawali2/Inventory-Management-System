@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inventory/cubits/add_product/add_product_cubit.dart';
-import 'package:inventory/presentation/add_product_item/add_product_item.dart';
+import 'package:inventory/cubits/checkout_item/checkout_item_cubit.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
 import '../../widgets/label_text.dart';
@@ -15,6 +14,7 @@ class RemoveItems extends StatefulWidget {
 
 class _RemoveItemsState extends State<RemoveItems> {
   TextEditingController itemName = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +42,9 @@ class _RemoveItemsState extends State<RemoveItems> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: defaultPadding),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Implement QR code scanning logic if needed
+                        },
                         icon: const Icon(
                           Icons.qr_code,
                           size: 50,
@@ -53,13 +55,51 @@ class _RemoveItemsState extends State<RemoveItems> {
                 ],
               ),
               const SizedBox(height: defaultPadding),
-              CustomButton(
-                title: 'Checkout',
-                onPressed: () {
-                  BlocProvider.of<AddProductCubit>(context)
-                      .checkoutItem(uid: itemName.text);
+              BlocConsumer<CheckoutItemCubit, CheckoutItemState>(
+                listener: (context, state) {
+                  if (state is CheckoutItemSuccess) {
+                    // Show a success snackbar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Item checked out successfully!'),
+                        duration: Duration(seconds: 2),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    // Optionally, you can navigate back or perform other actions
+                  } else if (state is CheckoutItemNotFound) {
+                    // Show a snackbar indicating that no item was found
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No item found for the given ID.'),
+                        duration: Duration(seconds: 2),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                  } else if (state is CheckoutItemError) {
+                    // Show an error snackbar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Failed to check out item. Please try again.'),
+                        duration: Duration(seconds: 2),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
-              )
+                builder: (context, state) {
+                  // You can add UI elements here based on the state if needed
+                  return CustomButton(
+                    title: 'Checkout',
+                    onPressed: () {
+                      BlocProvider.of<CheckoutItemCubit>(context)
+                          .checkoutItem(uid: itemName.text);
+                      itemName.clear();
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),

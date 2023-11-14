@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory/cubits/add_product/add_product_cubit.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
-
+import 'package:barcode_scan2/barcode_scan2.dart';
 import '../../widgets/label_text.dart';
 
 class AddItem extends StatefulWidget {
@@ -46,7 +46,13 @@ class _AddItemState extends State<AddItem> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: defaultPadding),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          ScanResult barcodeScanResult =
+                              await BarcodeScanner.scan();
+                          setState(() {
+                            uid.text = barcodeScanResult.rawContent;
+                          });
+                        },
                         icon: const Icon(
                           Icons.qr_code,
                           size: 50,
