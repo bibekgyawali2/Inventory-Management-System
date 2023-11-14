@@ -1,3 +1,4 @@
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory/cubits/checkout_item/checkout_item_cubit.dart';
@@ -42,8 +43,13 @@ class _RemoveItemsState extends State<RemoveItems> {
                     child: Padding(
                       padding: const EdgeInsets.only(top: defaultPadding),
                       child: IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // Implement QR code scanning logic if needed
+                          ScanResult barcodeScanResult =
+                              await BarcodeScanner.scan();
+                          setState(() {
+                            itemName.text = barcodeScanResult.rawContent;
+                          });
                         },
                         icon: const Icon(
                           Icons.qr_code,
@@ -66,7 +72,6 @@ class _RemoveItemsState extends State<RemoveItems> {
                         backgroundColor: Colors.green,
                       ),
                     );
-                    // Optionally, you can navigate back or perform other actions
                   } else if (state is CheckoutItemNotFound) {
                     // Show a snackbar indicating that no item was found
                     ScaffoldMessenger.of(context).showSnackBar(

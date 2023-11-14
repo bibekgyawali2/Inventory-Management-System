@@ -79,7 +79,7 @@ class _SignInState extends State<SignIn> {
                               .then(
                             (value) {
                               if (value != null) {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => const HomePage(),
