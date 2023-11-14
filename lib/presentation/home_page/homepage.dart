@@ -32,11 +32,11 @@ class HomePage extends StatelessWidget {
                       Navigator.pushNamed(context, Routes.addProduct);
                     },
                   ),
-                  HomeCards(
-                      title: 'Add Products Item',
-                      onTap: () {
-                        Navigator.pushNamed(context, Routes.addItem);
-                      }),
+                  // HomeCards(
+                  //     title: 'Add Products Item',
+                  //     onTap: () {
+                  //       Navigator.pushNamed(context, Routes.addItem);
+                  //     }),
                   HomeCards(
                       title: 'View Products',
                       onTap: () {

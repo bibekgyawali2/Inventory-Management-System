@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory/controller/auth_controller.dart';
 import 'package:inventory/utils/constants.dart';
@@ -64,37 +65,47 @@ class _SignUpState extends State<SignUp> {
                     const Text('Already have an account?'),
                     TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, Routes.signUp);
+                          Navigator.pushNamed(context, Routes.signIn);
                         },
                         child: const Text('Sign In'))
                   ],
                 ),
                 const SizedBox(height: defaultPadding),
-                CustomButton(
-                    title: 'Submit',
-                    onPressed: () async {
-                      try {
-                        await AuthController()
-                            .signUpMethod(emailAddress.text, password.text)
-                            .then((value) {
-                          return AuthController().storeUserData(
-                            email: emailAddress.text,
-                            name: name.text,
-                            password: password.text,
-                          );
-                        }).then((value) => Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const HomePage(),
-                                  ),
-                                ));
-                      } catch (e) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                        print(e);
-                      }
-                    })
+                isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : CustomButton(
+                        title: 'Submit',
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          try {
+                            UserCredential? userCredential =
+                                await AuthController().signUpMethod(
+                                    emailAddress.text, password.text);
+                            // Check if the signup was successful before storing user data
+                            if (userCredential != null) {
+                              await AuthController().storeUserData(
+                                name: name.text,
+                                email: emailAddress.text,
+                                password: password.text,
+                              );
+                              Navigator.pushNamed(context, Routes.homePage);
+                            } else {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            print(e);
+                          }
+                        },
+                      ),
               ],
             ),
           ),

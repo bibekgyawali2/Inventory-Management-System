@@ -14,7 +14,6 @@ class Routes {
   static const String signIn = '/sign_in';
   static const String signUp = '/sign_up';
   static const String viewProducts = '/view_product';
-  static const String addItem = '/add_item';
 
   static Map<String, WidgetBuilder> routes = {
     homePage: (context) => const HomePage(),
@@ -23,6 +22,5 @@ class Routes {
     signIn: (context) => const SignIn(),
     signUp: (context) => const SignUp(),
     viewProducts: (context) => const ViewProducts(),
-    addItem: (context) => const AddItem(),
   };
 }

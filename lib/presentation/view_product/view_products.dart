@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory/cubits/add_product/add_product_cubit.dart';
+import 'package:inventory/presentation/add_product_item/add_product_item.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/search_box.dart';
-
 import '../../model/product_modal.dart';
-import '../../routes/routes.dart';
 
 class ViewProducts extends StatefulWidget {
   const ViewProducts({super.key});
@@ -62,13 +61,32 @@ class _ViewProductsState extends State<ViewProducts> {
                               elevation: 3,
                               child: ListTile(
                                 isThreeLine: true,
-                                title: Text(productList[index].product),
-                                subtitle: Text(productList[index].price),
+                                title: Text(
+                                  productList[index].product,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Price: ${productList[index].price}'),
+                                    Text(
+                                        'Item Count: ${productList[index].itemCount}'),
+                                  ],
+                                ),
                                 trailing: PopupMenuButton<String>(
+                                  padding: const EdgeInsets.only(top: 20),
                                   onSelected: (String choice) {
                                     if (choice == 'Add') {
-                                      Navigator.pushNamed(
-                                          context, Routes.addItem);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => AddItem(
+                                            product: productList[index].product,
+                                            documentId:
+                                                productList[index].documentId,
+                                          ),
+                                        ),
+                                      );
                                     } else {}
                                   },
                                   itemBuilder: (BuildContext context) {

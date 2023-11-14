@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventory/controller/auth_controller.dart';
-import 'package:inventory/presentation/auth/sign_up.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
-
 import '../../../routes/routes.dart';
 import '../../../widgets/label_text.dart';
 import '../../home_page/homepage.dart';
@@ -18,6 +16,8 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   TextEditingController emailAddress = TextEditingController();
   TextEditingController password = TextEditingController();
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,23 +62,37 @@ class _SignInState extends State<SignIn> {
                   ],
                 ),
                 const SizedBox(height: defaultPadding),
-                CustomButton(
-                    title: 'Submit',
-                    onPressed: () async {
-                      await AuthController()
-                          .loginMethod(
-                              email: emailAddress.text, password: password.text)
-                          .then((value) {
-                        if (value != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
+                isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : CustomButton(
+                        title: 'Submit',
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await AuthController()
+                              .loginMethod(
+                                  email: emailAddress.text,
+                                  password: password.text)
+                              .then(
+                            (value) {
+                              if (value != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomePage(),
+                                  ),
+                                );
+                              }
+                            },
                           );
-                        }
-                      });
-                    })
+                          setState(() {
+                            isLoading = false;
+                          });
+                        },
+                      )
               ],
             ),
           ),

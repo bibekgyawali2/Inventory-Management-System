@@ -1,11 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory/cubits/add_product/add_product_cubit.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
 
 import '../../widgets/label_text.dart';
 
 class AddItem extends StatefulWidget {
-  const AddItem({super.key});
+  final String? product;
+  final String documentId;
+  const AddItem({super.key, this.product, required this.documentId});
 
   @override
   State<AddItem> createState() => _AddItemState();
@@ -13,6 +19,7 @@ class AddItem extends StatefulWidget {
 
 class _AddItemState extends State<AddItem> {
   TextEditingController uid = TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +57,44 @@ class _AddItemState extends State<AddItem> {
                 ],
               ),
               const SizedBox(height: defaultPadding),
-              CustomButton(title: "Add", onPressed: () {})
+              isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : CustomButton(
+                      title: "Add",
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        bool result =
+                            await BlocProvider.of<AddProductCubit>(context)
+                                .addItem(
+                                    uid: uid.text,
+                                    documentId: widget.documentId,
+                                    product: widget.product!);
+                        if (result) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Item added successfully!'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          uid.clear();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Failed to add Item. Please try again.'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
+                    )
             ],
           ),
         ),

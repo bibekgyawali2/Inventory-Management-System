@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously,
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
 import '../../cubits/add_product/add_product_cubit.dart';
+import '../../routes/routes.dart';
 import '../../widgets/label_text.dart';
 
 class AddProducts extends StatefulWidget {
@@ -15,6 +18,7 @@ class AddProducts extends StatefulWidget {
 class _AddProductsState extends State<AddProducts> {
   TextEditingController productName = TextEditingController();
   TextEditingController price = TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,13 +44,43 @@ class _AddProductsState extends State<AddProducts> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: defaultPadding),
-              CustomButton(
-                title: 'Submit',
-                onPressed: () {
-                  BlocProvider.of<AddProductCubit>(context).addOrder(
-                      price: price.text, productName: productName.text);
-                },
-              ),
+              isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : CustomButton(
+                      title: 'Submit',
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        bool result =
+                            await BlocProvider.of<AddProductCubit>(context)
+                                .addOrder(
+                                    price: price.text,
+                                    productName: productName.text);
+                        setState(() {
+                          isLoading = false;
+                        });
+                        if (result) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Product added successfully!'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          Navigator.pushNamed(context, Routes.viewProducts);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Failed to add product. Please try again.'),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
+                    ),
             ],
           ),
         ),
@@ -54,34 +88,3 @@ class _AddProductsState extends State<AddProducts> {
     );
   }
 }
-
-
-
-
-            // const SizedBox(height: defaultPadding),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       flex: 9,
-              //       child: LabelText(
-              //         controller: itemName,
-              //         label: 'Unique Identification Number',
-              //         hintText: 'eg: 12434829348',
-              //         keyboardType: TextInputType.number,
-              //       ),
-              //     ),
-              //     Expanded(
-              //       flex: 1,
-              //       child: Padding(
-              //         padding: const EdgeInsets.only(top: defaultPadding),
-              //         child: IconButton(
-              //           onPressed: () {},
-              //           icon: const Icon(
-              //             Icons.qr_code,
-              //             size: 50,
-              //           ),
-              //         ),
-              //       ),
-              //     )
-              //   ],
-              // ),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inventory/cubits/add_product/add_product_cubit.dart';
+import 'package:inventory/presentation/add_product_item/add_product_item.dart';
 import 'package:inventory/utils/constants.dart';
 import 'package:inventory/widgets/custom_button.dart';
 import '../../widgets/label_text.dart';
@@ -37,7 +40,7 @@ class _RemoveItemsState extends State<RemoveItems> {
                   Expanded(
                     flex: 1,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 50),
+                      padding: const EdgeInsets.only(top: defaultPadding),
                       child: IconButton(
                         onPressed: () {},
                         icon: const Icon(
@@ -50,7 +53,13 @@ class _RemoveItemsState extends State<RemoveItems> {
                 ],
               ),
               const SizedBox(height: defaultPadding),
-              CustomButton(title: 'Checkout', onPressed: () {})
+              CustomButton(
+                title: 'Checkout',
+                onPressed: () {
+                  BlocProvider.of<AddProductCubit>(context)
+                      .checkoutItem(uid: itemName.text);
+                },
+              )
             ],
           ),
         ),
