@@ -1,15 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-
 import '../../model/product_modal.dart';
 import '../../utils/constants.dart';
-
 part 'add_product_state.dart';
 
 class AddProductCubit extends Cubit<AddProductState> {
   AddProductCubit() : super(AddProductInitial());
   List<ProductModal> originalProductList = [];
+
   //place Product
   Future<bool> addOrder({
     required String productName,
@@ -18,7 +17,6 @@ class AddProductCubit extends Cubit<AddProductState> {
     try {
       final DocumentReference orderDocRef =
           FirebaseFirestore.instance.collection('Product').doc();
-
       await orderDocRef.set({
         'Product': productName,
         'Price': price,
@@ -82,21 +80,17 @@ class AddProductCubit extends Cubit<AddProductState> {
           .where('user_id', isEqualTo: currentUser!.uid)
           .get();
       List<DocumentSnapshot> documents = snapshot.docs;
-
       originalProductList =
           await Future.wait(documents.map((DocumentSnapshot document) async {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
         // Reference to the 'productList' subcollection inside the product document
         final CollectionReference productListRef = FirebaseFirestore.instance
             .collection('Product')
             .doc(document.id)
             .collection('productList');
-
         // Fetch the item count from 'productList' subcollection
         QuerySnapshot productListSnapshot = await productListRef.get();
         int itemCount = productListSnapshot.size;
-
         return ProductModal(
           product: data['Product'],
           price: data['Price'],
@@ -105,7 +99,6 @@ class AddProductCubit extends Cubit<AddProductState> {
           itemCount: itemCount,
         );
       }));
-
       emit(FetchProductSuccess(originalProductList));
     } catch (e) {
       emit(AddProductError());
@@ -118,7 +111,6 @@ class AddProductCubit extends Cubit<AddProductState> {
       getProduct();
       return;
     }
-
     final List<ProductModal> filteredList = originalProductList
         .where((product) =>
             product.product.toLowerCase().contains(query.toLowerCase()) ||
