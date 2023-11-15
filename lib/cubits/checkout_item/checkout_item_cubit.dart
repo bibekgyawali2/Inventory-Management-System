@@ -12,6 +12,8 @@ class CheckoutItemCubit extends Cubit<CheckoutItemState> {
     required String uid,
   }) async {
     try {
+      String product = '';
+      String price = '';
       // Query the 'Product' collection to find documents with the specified UID
       QuerySnapshot productQuerySnapshot = await FirebaseFirestore.instance
           .collection('Product')
@@ -29,11 +31,16 @@ class CheckoutItemCubit extends Cubit<CheckoutItemState> {
 
         // Check if any items were found
         if (querySnapshot.docs.isNotEmpty) {
+          Map<String, dynamic> productData =
+              productDoc.data() as Map<String, dynamic>;
+          product = productData['Product'] ?? ''; // Null check
+          price = productData['Price'] ?? '';
           // Iterate through the documents and delete each one
           for (QueryDocumentSnapshot doc in querySnapshot.docs) {
             await productListRef.doc(doc.id).delete();
           }
           // Emit a state indicating successful checkout
+          addCheckOutInformation(uid, product, price);
           emit(CheckoutItemSuccess());
           return; // Exit the method if items were found and deleted
         }
@@ -45,6 +52,30 @@ class CheckoutItemCubit extends Cubit<CheckoutItemState> {
       // Handle errors as needed
       emit(CheckoutItemError());
       print('Error during checkout: $e');
+    }
+  }
+
+  // Add check-out information to the user's collection
+  Future<void> addCheckOutInformation(
+    String uid,
+    String product,
+    String price,
+  ) async {
+    try {
+      final DocumentReference userCheckInRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection('CheckOut')
+          .doc();
+      DateTime timestamp = DateTime.now();
+      await userCheckInRef.set({
+        'uid': uid,
+        'product': product,
+        'price': price,
+        'timestamp': timestamp,
+      });
+    } catch (e) {
+      print('Error adding check-in information: $e');
     }
   }
 }

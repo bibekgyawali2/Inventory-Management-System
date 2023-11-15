@@ -34,6 +34,7 @@ class AddProductCubit extends Cubit<AddProductState> {
     required String
         documentId, // Added parameter to accept the product documentId
     required String product,
+    required String price,
   }) async {
     try {
       // Reference to the product document in the 'Product' collection
@@ -49,6 +50,7 @@ class AddProductCubit extends Cubit<AddProductState> {
         'uid': uid,
         'documentId': documentId,
       });
+      addCheckInInformation(uid, product, price);
       return true;
     } catch (e) {
       // Handle errors as needed
@@ -69,7 +71,29 @@ class AddProductCubit extends Cubit<AddProductState> {
     }
   }
 
-  //checkout items
+  // Add check-in information to the user's collection
+  Future<void> addCheckInInformation(
+    String uid,
+    String product,
+    String price,
+  ) async {
+    try {
+      final DocumentReference userCheckInRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection('CheckIn')
+          .doc();
+      DateTime timestamp = DateTime.now();
+      await userCheckInRef.set({
+        'uid': uid,
+        'product': product,
+        'price': price,
+        'timestamp': timestamp,
+      });
+    } catch (e) {
+      print('Error adding check-in information: $e');
+    }
+  }
 
 //fetch Product
   Future<void> getProduct() async {

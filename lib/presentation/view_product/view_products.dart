@@ -89,6 +89,7 @@ class _ViewProductsState extends State<ViewProducts> {
                                                   productList[index].product,
                                               documentId:
                                                   productList[index].documentId,
+                                              price: productList[index].price,
                                             ),
                                           ),
                                         );

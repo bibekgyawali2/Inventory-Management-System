@@ -32,11 +32,11 @@ class HomePage extends StatelessWidget {
                       Navigator.pushNamed(context, Routes.addProduct);
                     },
                   ),
-                  // HomeCards(
-                  //     title: 'Add Products Item',
-                  //     onTap: () {
-                  //       Navigator.pushNamed(context, Routes.addItem);
-                  //     }),
+                  HomeCards(
+                      title: 'View Reports',
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.addProduct);
+                      }),
                   HomeCards(
                       title: 'View Products',
                       onTap: () {
@@ -68,9 +68,9 @@ class HomeCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: GestureDetector(
-        onTap: onTap,
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
         child: SizedBox(
           height: 500,
           width: 500,

@@ -11,7 +11,9 @@ import '../../widgets/label_text.dart';
 class AddItem extends StatefulWidget {
   final String? product;
   final String documentId;
-  const AddItem({super.key, this.product, required this.documentId});
+  final String price;
+  const AddItem(
+      {super.key, this.product, required this.documentId, required this.price});
 
   @override
   State<AddItem> createState() => _AddItemState();
@@ -76,9 +78,11 @@ class _AddItemState extends State<AddItem> {
                         bool result =
                             await BlocProvider.of<AddProductCubit>(context)
                                 .addItem(
-                                    uid: uid.text,
-                                    documentId: widget.documentId,
-                                    product: widget.product!);
+                          uid: uid.text,
+                          documentId: widget.documentId,
+                          product: widget.product!,
+                          price: widget.price,
+                        );
                         if (result) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
