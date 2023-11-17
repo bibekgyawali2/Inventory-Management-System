@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:inventory/presentation/add_product/add_product.dart';
-import 'package:inventory/presentation/add_product_item/add_product_item.dart';
 import 'package:inventory/presentation/auth/sign_in/sign_in.dart';
 import 'package:inventory/presentation/auth/sign_up.dart';
 import 'package:inventory/presentation/home_page/homepage.dart';
 import 'package:inventory/presentation/remove_item/remove_item.dart';
+import 'package:inventory/presentation/reports/reports.dart';
 import 'package:inventory/presentation/view_product/view_products.dart';
 
 class Routes {
@@ -14,6 +14,7 @@ class Routes {
   static const String signIn = '/sign_in';
   static const String signUp = '/sign_up';
   static const String viewProducts = '/view_product';
+  static const String viewReport = '/view_report';
 
   static Map<String, WidgetBuilder> routes = {
     homePage: (context) => const HomePage(),
@@ -22,5 +23,6 @@ class Routes {
     signIn: (context) => const SignIn(),
     signUp: (context) => const SignUp(),
     viewProducts: (context) => const ViewProducts(),
+    viewReport: (context) => const ViewReport(),
   };
 }

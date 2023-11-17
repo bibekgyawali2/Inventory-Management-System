@@ -41,6 +41,9 @@ dependencies:
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3
   barcode_scan2: ^4.3.0
+  pdf: ^3.10.6
+  open_file:
+  share: ^2.0.4
 
 dev_dependencies:
   flutter_test:
